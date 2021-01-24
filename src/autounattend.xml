@@ -148,7 +148,11 @@
 			<FirstLogonCommands>
 				<SynchronousCommand wcm:action="add">
 					<Order>1</Order>
-					<CommandLine>powershell -ExecutionPolicy ByPass Invoke-Expression (Invoke-WebRequest -Uri https://raw.githubusercontent.com/tinohager/Windows10-Autounattend/master/src/firststart.ps1)</CommandLine>
+					<CommandLine>cmd /c powershell -ExecutionPolicy ByPass Invoke-WebRequest -Uri https://git.io/JtZnc -OutFile C:\Windows\Temp\firststart.ps1</CommandLine>
+				</SynchronousCommand>
+				<SynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<CommandLine>cmd /c powershell -ExecutionPolicy ByPass Invoke-Expression (Invoke-WebRequest -Uri https://raw.githubusercontent.com/tinohager/Windows10-Autounattend/master/src/firststart.ps1)</CommandLine>
 				</SynchronousCommand>
 			</FirstLogonCommands>
 			<RegisteredOwner>Nager</RegisteredOwner>
