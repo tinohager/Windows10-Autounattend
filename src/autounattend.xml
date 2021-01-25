@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- This XML is for EFI partitioning only -->
+<!-- Windows 10 Pro -->
 <unattend xmlns="urn:schemas-microsoft-com:unattend" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
 	<settings pass="windowsPE">
 		<component name="Microsoft-Windows-Setup" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" processorArchitecture="amd64">
@@ -152,7 +153,7 @@
 				</SynchronousCommand>
 				<SynchronousCommand wcm:action="add">
 					<Order>2</Order>
-					<CommandLine>cmd /c powershell -ExecutionPolicy ByPass Invoke-Expression (Invoke-WebRequest -Uri https://raw.githubusercontent.com/tinohager/Windows10-Autounattend/master/src/firststart.ps1)</CommandLine>
+					<CommandLine>cmd /c powershell -ExecutionPolicy ByPass -File C:\Windows\Temp\firststart.ps1</CommandLine>
 				</SynchronousCommand>
 			</FirstLogonCommands>
 			<RegisteredOwner>Nager</RegisteredOwner>
