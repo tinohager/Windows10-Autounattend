@@ -18,6 +18,15 @@ If the error dialog is displayed after the installation and the computer hangs i
 | **UILanguage** | Specifies the system default user interface (UI) language |
 | **UserLocale** | Specifies the per-user settings used for formatting dates, times, currency, and numbers |
 
+## Configuration Passes
+
+| Step  | Pass | Description |
+| ------------- | ------------- | ------------- |
+| 1 | windowsPE | The Windows image is copied to the destination computer
+| 2 | offlineServicing | After copy the image and before the computer reboots (not used in my project)
+| 3 | specialize | Set language configuration, set hostname
+| 4 | oobeSystem | Before Windows Welcome starts (Create User, Start Powershell Setup Script)
+
 ## Create an USB Boot Device
 
 To create a bootable USB stick I recommend one of the following tools. Ventoy has the advantage that several ISOs are available at the same time on a USB stick.
