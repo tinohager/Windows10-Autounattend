@@ -13,5 +13,5 @@ If the error dialog is displayed after the installation and the computer hangs i
 
 To create a bootable USB stick I recommend one of the following tools. Ventoy has the advantage that several ISOs are available at the same time on a USB stick.
 
-- Use [Ventoy](https://github.com/ventoy/Ventoy)
+- Use [Ventoy](https://github.com/ventoy/Ventoy) with the `Auto Installation Plugin`
 - Use this [Powershell script](https://github.com/vmware-samples/euc-samples/tree/master/Windows-Samples/Tools%20%26%20Utilities/Windows%2010%20Automated%20Setup%20Media) from VMware
