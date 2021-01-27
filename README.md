@@ -33,3 +33,14 @@ To create a bootable USB stick I recommend one of the following tools. Ventoy ha
 
 - Use [Ventoy](https://github.com/ventoy/Ventoy) with the `Auto Installation Plugin`
 - Use this [Powershell script](https://github.com/vmware-samples/euc-samples/tree/master/Windows-Samples/Tools%20%26%20Utilities/Windows%2010%20Automated%20Setup%20Media) from VMware
+
+### Ventoy
+
+You should have this files in your program directory.
+
+    .
+    ├── ventoy                                     # Base folder for ventoy configuration
+    ├── ventoy/ventoy.json                         # Vento Configuration
+    ├── ventoy/script/windows_autounattend1.xml    # Windows Auto Unattend Configuration
+    ├── ISO                                        # Base folder for all ISO files
+    ├── ISO/Windows.iso                            # The Windows ISO
