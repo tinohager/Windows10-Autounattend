@@ -16,6 +16,12 @@ $packageNotepadPlusPlus = Join-Path -Path $installPath -ChildPath "npp.7.9.2.Ins
 Invoke-WebRequest "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v7.9.2/npp.7.9.2.Installer.x64.exe" -OutFile $packageNotepadPlusPlus
 Start-Process $packageNotepadPlusPlus -Wait -NoNewWindow -ArgumentList "/S"
 
+# Install Google Chrome
+Write-Host "Install Google Chrome"
+$packageGoogleChrome = Join-Path -Path $installPath -ChildPath "GoogleChromeStandaloneEnterprise64.msi"
+Invoke-WebRequest "http://dl.google.com/tag/s/defaultbrowser/edgedl/chrome/install/GoogleChromeStandaloneEnterprise64.msi" -OutFile $packageGoogleChrome
+Start-Process "msiexec.exe" -Wait -NoNewWindow -ArgumentList "/i ""$($packageGoogleChrome)"" /qb"
+
 $manufacturer = (Get-ComputerInfo | Select -expand CsManufacturer)
 Add-Content "C:\Temp\Unattend\autounattend.log" $manufacturer
 if ($manufacturer -eq "Lenovo") {
