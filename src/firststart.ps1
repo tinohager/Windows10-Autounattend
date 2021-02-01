@@ -1,35 +1,38 @@
-Write-Host "FirstLogonCommands Script"
+# Install Nuget Package Provider
+Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Confirm:$false -Force
 
-$installPath = "C:\Temp\Unattend"
+# Install check pending reboot module
+Install-Module PendingReboot -Confirm:$false -Force
 
-New-Item $installPath -ItemType Directory
+# Import check pending reboot module
+Import-Module PendingReboot
 
-# Install 7-Zip
-Write-Host "Install 7-Zip"
-$package7Zip = Join-Path -Path $installPath -ChildPath "7z1900-x64.msi"
-Invoke-WebRequest "https://www.7-zip.org/a/7z1900-x64.msi" -OutFile $package7Zip
-Start-Process "msiexec.exe" -Wait -NoNewWindow -ArgumentList "/i ""$($package7Zip)"" /qb"
+# Install Chocolatey
+Set-ExecutionPolicy Bypass -Scope Process -Force
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
-# Install Notepad++
-Write-Host "Install Notepad++"
-$packageNotepadPlusPlus = Join-Path -Path $installPath -ChildPath "npp.7.9.2.Installer.x64.exe"
-Invoke-WebRequest "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v7.9.2/npp.7.9.2.Installer.x64.exe" -OutFile $packageNotepadPlusPlus
-Start-Process $packageNotepadPlusPlus -Wait -NoNewWindow -ArgumentList "/S"
+# Required Chocolatey packages
+$requiredPackages = @("notepadplusplus", "googlechrome", "firefox", "7zip.install")
+$installedPackages = New-Object Collections.Generic.List[String]
 
-# Install Google Chrome
-Write-Host "Install Google Chrome"
-$packageGoogleChrome = Join-Path -Path $installPath -ChildPath "GoogleChromeStandaloneEnterprise64.msi"
-Invoke-WebRequest "http://dl.google.com/tag/s/defaultbrowser/edgedl/chrome/install/GoogleChromeStandaloneEnterprise64.msi" -OutFile $packageGoogleChrome
-Start-Process "msiexec.exe" -Wait -NoNewWindow -ArgumentList "/i ""$($packageGoogleChrome)"" /qb"
-
-$manufacturer = (Get-ComputerInfo | Select -expand CsManufacturer)
-Add-Content "C:\Temp\Unattend\autounattend.log" $manufacturer
-if ($manufacturer -eq "Lenovo") {
-  # Install Vantage
-  $packageLenovoCommercialVantage = Join-Path -Path $installPath -ChildPath "LenovoCommercialVantage.zip"
-  Invoke-WebRequest "https://download.lenovo.com/pccbbs/thinkvantage_en/metroapps/Vantage/LenovoCommercialVantage_10.2011.14.0_v1.zip" -OutFile $packageLenovoCommercialVantage
-  $lenovoCommercialVantage = Join-Path -Path $installPath -ChildPath "LenovoCommercialVantage"
-  Expand-Archive $packageLenovoCommercialVantage -DestinationPath $lenovoCommercialVantage
-  $installScriptLenovoCommercialVantage = Join-Path -Path $lenovoCommercialVantage -ChildPath "setup-commercial-vantage.bat"
-  Start-Process $installScriptLenovoCommercialVantage -Wait -NoNewWindow
+$installedPackagesPath = Join-Path -Path $PSScriptRoot -ChildPath "installedPackages.txt"
+if (Test-Path $installedPackagesPath -PathType Leaf) {
+    $installedPackages.AddRange([string[]](Get-Content $installedPackagesPath))
 }
+
+# Calculate missing packages
+$missingPackages = $requiredPackages | Where-Object { $installedPackages -NotContains $_ }
+
+foreach ($package in $missingPackages) {
+    if ((Test-PendingReboot).IsRebootPending) {
+        Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall' -Value "%systemroot%\System32\WindowsPowerShell\v1.0\powershell.exe -executionpolicy bypass -file $PSCommandPath"
+    }
+
+    $installedPackages.Add($package)
+    $installedPackages | Out-File $installedPackagesPath
+
+    choco install $package -y
+}
+
+
