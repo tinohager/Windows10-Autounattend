@@ -27,11 +27,11 @@ while ((Get-WUInstallerStatus).IsBusy) {
     Start-Sleep -s 10
 }
 
-# Install available Windows Updates
+# Install available Windows Updates (less 1GB)
 Write-Host "Start update installation"
-if ((Get-WindowsUpdate -Verbose).Count -gt 0) {
+if ((Get-WindowsUpdate -MaxSize 1073741824 -Verbose).Count -gt 0) {
     Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
-    Get-WindowsUpdate -Install -AcceptAll -Confirm:$false -IgnoreReboot
+    Get-WindowsUpdate -MaxSize 1073741824 -Install -AcceptAll -Confirm:$false -IgnoreReboot
     Restart-Computer -Force
     return
 }
