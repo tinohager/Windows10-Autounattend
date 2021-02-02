@@ -26,7 +26,7 @@ $missingPackages = $requiredPackages | Where-Object { $installedPackages -NotCon
 
 foreach ($package in $missingPackages) {
     if ((Test-PendingReboot).IsRebootPending) {
-        Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall' -Value "%systemroot%\System32\WindowsPowerShell\v1.0\powershell.exe -executionpolicy bypass -file $PSCommandPath"
+        Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
         Restart-Computer -Force
         return
     }
