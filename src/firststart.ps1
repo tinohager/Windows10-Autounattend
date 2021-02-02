@@ -6,8 +6,6 @@ Write-Host "Windows10-Autounattend"
     Install-PackageProvider -Name NuGet -Confirm:$false -Force
 #}
 
-{
-
 # Install PendingReboot Module
 if (-Not (Get-Module -ListAvailable -Name PendingReboot)) {
     Write-Host "Install PendingReboot Module"
