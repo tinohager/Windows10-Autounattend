@@ -21,7 +21,10 @@ if (-Not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
 
 # Install available Windows Updates
 if ((Get-WindowsUpdate).Count -gt 0) {
-    Install-WindowsUpdate -AcceptAll
+    Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
+    Install-WindowsUpdate -AcceptAll –Confirm:$false –AutoReboot
+    Restart-Computer -Force
+    return
 }
 
 # Install Chocolatey
