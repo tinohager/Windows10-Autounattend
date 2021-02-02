@@ -6,6 +6,8 @@ Write-Host "Windows10-Autounattend"
     Install-PackageProvider -Name NuGet -Confirm:$false -Force
 #}
 
+{
+
 # Install PendingReboot Module
 if (-Not (Get-Module -ListAvailable -Name PendingReboot)) {
     Write-Host "Install PendingReboot Module"
@@ -24,7 +26,7 @@ if (-Not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
 # Install available Windows Updates
 if ((Get-WindowsUpdate -MicrosoftUpdate).Count -gt 0) {
     Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
-    Get-WindowsUpdate -MicrosoftUpdate -Install -AcceptAll -Confirm:$false “IgnoreReboot
+    Get-WindowsUpdate -MicrosoftUpdate -Install -AcceptAll -Confirm:$false -IgnoreReboot
     Restart-Computer -Force
     return
 }
