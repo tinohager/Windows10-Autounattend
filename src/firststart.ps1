@@ -29,9 +29,9 @@ while ((Get-WUInstallerStatus).IsBusy) {
 
 # Install available Windows Updates
 Write-Host "Start update installation"
-if ((Get-WindowsUpdate -MicrosoftUpdate -Verbose).Count -gt 0) {
+if ((Get-WindowsUpdate -Verbose).Count -gt 0) {
     Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
-    Get-WindowsUpdate -MicrosoftUpdate -Install -AcceptAll -Confirm:$false -IgnoreReboot
+    Get-WindowsUpdate -Install -AcceptAll -Confirm:$false -IgnoreReboot
     Restart-Computer -Force
     return
 }
