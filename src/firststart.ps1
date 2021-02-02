@@ -1,16 +1,22 @@
 # Install Nuget Package Provider
-Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Confirm:$false -Force
+if ((Get-PackageProvider -Name NuGet).version -lt 2.8.5.201) {
+    Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Confirm:$false -Force
+}
 
 # Install check pending reboot module
-Install-Module PendingReboot -Confirm:$false -Force
+if (-Not (Get-Module -ListAvailable -Name PendingReboot)) {
+    Install-Module PendingReboot -Confirm:$false -Force
+}
 
 # Import check pending reboot module
 Import-Module PendingReboot
 
 # Install Chocolatey
-Set-ExecutionPolicy Bypass -Scope Process -Force
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+if (-Not (Test-Path "$($env:ProgramData)\chocolatey\choco.exe")) {
+    Set-ExecutionPolicy Bypass -Scope Process -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+}
 
 # Required Chocolatey packages
 $requiredPackages = @("notepadplusplus", "googlechrome", "firefox", "7zip.install", "sql-server-express", "sql-server-management-studio")
@@ -37,4 +43,5 @@ foreach ($package in $missingPackages) {
     choco install $package -y
 }
 
-
+Write-Host "Installation done"
+Start-Sleep -s 60
