@@ -3,19 +3,20 @@ if (-Not (Get-PackageProvider -Name NuGet)) {
     Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Confirm:$false -Force
 }
 
-# Install check pending reboot module
+# Install PendingReboot Module
 if (-Not (Get-Module -ListAvailable -Name PendingReboot)) {
     Install-Module PendingReboot -Confirm:$false -Force
 }
 
-# Import check pending reboot module
+# Import PendingReboot Module
 Import-Module PendingReboot
 
-# Install Windows Updates
+# Install WindowsUpdate Module
 if (-Not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
     Install-Module PSWindowsUpdate -Confirm:$false -Force
 }
 
+# Install available Windows Updates
 if ((Get-WindowsUpdate).Count -gt 0) {
     Install-WindowsUpdate -AcceptAll
 }
@@ -54,4 +55,11 @@ foreach ($package in $missingPackages) {
 }
 
 Write-Host "Installation done"
+
+$pathCustomizeScript = "C:\Temp\Unattended\customize.ps1"
+if (Test-Path $pathCustomizeScript -PathType Leaf) {
+    Write-Host "Found customize scirpt"
+    & $pathCustomizeScript
+}
+
 Start-Sleep -s 60
