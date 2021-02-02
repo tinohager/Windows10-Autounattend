@@ -13,7 +13,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
 # Required Chocolatey packages
-$requiredPackages = @("notepadplusplus", "googlechrome", "firefox", "7zip.install")
+$requiredPackages = @("notepadplusplus", "googlechrome", "firefox", "7zip.install", "sql-server-express", "sql-server-management-studio")
 $installedPackages = New-Object Collections.Generic.List[String]
 
 $installedPackagesPath = Join-Path -Path $PSScriptRoot -ChildPath "installedPackages.txt"
@@ -27,6 +27,8 @@ $missingPackages = $requiredPackages | Where-Object { $installedPackages -NotCon
 foreach ($package in $missingPackages) {
     if ((Test-PendingReboot).IsRebootPending) {
         Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall' -Value "%systemroot%\System32\WindowsPowerShell\v1.0\powershell.exe -executionpolicy bypass -file $PSCommandPath"
+        Restart-Computer -Confirm
+        return
     }
 
     $installedPackages.Add($package)
