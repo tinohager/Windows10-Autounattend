@@ -1,3 +1,5 @@
+Write-Host "Windows10-Autounattend"
+
 # Install Nuget PackageProvider
 if (-Not (Get-PackageProvider -Name NuGet)) {
     Write-Host "Install Nuget PackageProvider"
@@ -22,7 +24,7 @@ if (-Not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
 # Install available Windows Updates
 if ((Get-WindowsUpdate).Count -gt 0) {
     Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
-    Install-WindowsUpdate -AcceptAll –Confirm:$false –AutoReboot
+    Install-WindowsUpdate -AcceptAll -Confirm:$false -AutoReboot
     Restart-Computer -Force
     return
 }
