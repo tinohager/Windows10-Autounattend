@@ -21,7 +21,14 @@ if (-Not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
     Install-Module PSWindowsUpdate -Confirm:$false -Force
 }
 
+# Check is busy
+while ((Get-WUInstallerStatus).IsBusy) {
+    Write-Host "Windows Update installer is busy, wait..."
+    Start-Sleep -s 10
+}
+
 # Install available Windows Updates
+Write-Host "Start update installation"
 if ((Get-WindowsUpdate -MicrosoftUpdate).Count -gt 0) {
     Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
     Get-WindowsUpdate -MicrosoftUpdate -Install -AcceptAll -Confirm:$false -IgnoreReboot
