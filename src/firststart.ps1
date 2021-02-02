@@ -1,5 +1,5 @@
 # Install Nuget Package Provider
-if (-Not (Get-PackageProvider -Name NuGet).version -lt 2.8.5.201) {
+if (-Not (Get-PackageProvider -Name NuGet)) {
     Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Confirm:$false -Force
 }
 
