@@ -1,5 +1,5 @@
 # Install Nuget Package Provider
-if ((Get-PackageProvider -Name NuGet).version -lt 2.8.5.201) {
+if (-Not (Get-PackageProvider -Name NuGet).version -lt 2.8.5.201) {
     Install-PackageProvider -Name NuGet -RequiredVersion 2.8.5.201 -Confirm:$false -Force
 }
 
@@ -10,6 +10,15 @@ if (-Not (Get-Module -ListAvailable -Name PendingReboot)) {
 
 # Import check pending reboot module
 Import-Module PendingReboot
+
+# Install Windows Updates
+if (-Not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
+    Install-Module PSWindowsUpdate -Confirm:$false -Force
+}
+
+if ((Get-WindowsUpdate).Count -gt 0) {
+    Install-WindowsUpdate -AcceptAll
+}
 
 # Install Chocolatey
 if (-Not (Test-Path "$($env:ProgramData)\chocolatey\choco.exe")) {
@@ -22,6 +31,7 @@ if (-Not (Test-Path "$($env:ProgramData)\chocolatey\choco.exe")) {
 $requiredPackages = @("notepadplusplus", "googlechrome", "firefox", "7zip.install", "sql-server-express", "sql-server-management-studio")
 $installedPackages = New-Object Collections.Generic.List[String]
 
+# Load installed packages
 $installedPackagesPath = Join-Path -Path $PSScriptRoot -ChildPath "installedPackages.txt"
 if (Test-Path $installedPackagesPath -PathType Leaf) {
     $installedPackages.AddRange([string[]](Get-Content $installedPackagesPath))
