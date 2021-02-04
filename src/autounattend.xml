@@ -6,6 +6,10 @@
 		<component name="Microsoft-Windows-Setup" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" processorArchitecture="amd64">
 			<UserData>
 				<AcceptEula>true</AcceptEula>
+				<ProductKey>
+					<Key>W269N-WFGWX-YVC9B-4J6C9-T83GX</Key>
+					<WillShowUI>OnError</WillShowUI>
+				</ProductKey>
 			</UserData>
 			<DiskConfiguration>
 				<Disk wcm:action="add">
@@ -147,12 +151,20 @@
 				<Enabled>true</Enabled>
 			</AutoLogon>
 			<FirstLogonCommands>
+				<!-- Check if an Internet connection is available -->
 				<SynchronousCommand wcm:action="add">
 					<Order>1</Order>
-					<CommandLine>cmd /c powershell -ExecutionPolicy ByPass Invoke-WebRequest -Uri https://git.io/JtZnc -OutFile C:\Windows\Temp\firststart.ps1</CommandLine>
+					<CommandLine>cmd /c powershell -ExecutionPolicy ByPass while (-Not (Test-Connection 8.8.8.8 -Quiet)) { Write-Host "No Internet Connection available" }</CommandLine>
 				</SynchronousCommand>
+				<!-- Download customize script (add file here) -->
+				<!-- Download firststart script -->
 				<SynchronousCommand wcm:action="add">
 					<Order>2</Order>
+					<CommandLine>cmd /c powershell -ExecutionPolicy ByPass Invoke-WebRequest -Uri https://git.io/JtZnc -OutFile C:\Windows\Temp\firststart.ps1</CommandLine>
+				</SynchronousCommand>
+				<!-- Execute firststart script -->
+				<SynchronousCommand wcm:action="add">
+					<Order>3</Order>
 					<CommandLine>cmd /c powershell -ExecutionPolicy ByPass -File C:\Windows\Temp\firststart.ps1</CommandLine>
 				</SynchronousCommand>
 			</FirstLogonCommands>
