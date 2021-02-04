@@ -62,7 +62,7 @@ if (-Not (Test-Path "$($env:ProgramData)\chocolatey\choco.exe")) {
 }
 
 # Required Chocolatey packages
-$requiredPackages = @("notepadplusplus", "googlechrome", "firefox", "7zip.install")
+$requiredPackages = @("notepadplusplus", "7zip.install", "firefox", "googlechrome")
 $installedPackages = New-Object Collections.Generic.List[String]
 
 # Load installed packages
