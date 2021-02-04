@@ -28,12 +28,30 @@ while ((Get-WUInstallerStatus).IsBusy) {
 }
 
 # Install available Windows Updates (less 1GB)
-Write-Host "Start update installation"
+Write-Host "Start installation system updates"
 if ((Get-WindowsUpdate -MaxSize 1073741824 -Verbose).Count -gt 0) {
     Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
     Get-WindowsUpdate -MaxSize 1073741824 -Install -AcceptAll -Confirm:$false -IgnoreReboot
     Restart-Computer -Force
     return
+}
+
+# Install Hardware Manufacturer Updates
+Write-Host "Start installation manufacturers"
+$manufacturer = (Get-ComputerInfo | Select -expand CsManufacturer)
+
+if ($manufacturer -eq "Lenovo") {
+    Write-Host "Lenovo detected"
+
+    # Install PendingReboot Module
+    if (-Not (Get-Module -ListAvailable -Name LSUClient)) {
+        Write-Host "Install LSUClient Module"
+        Install-Module LSUClient -Confirm:$false -Force
+    }
+
+    $updates = Get-LSUpdate
+    $updates | Save-LSUpdate -ShowProgress
+    $updates | Install-LSUpdate -Verbose
 }
 
 # Install Chocolatey
