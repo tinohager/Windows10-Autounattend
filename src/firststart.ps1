@@ -38,7 +38,6 @@ $code = {
     if ((Get-WindowsUpdate -MaxSize 1073741824 -Verbose).Count -gt 0) {
         try {
             $status = Get-WindowsUpdate -MaxSize 1073741824 -Install -AcceptAll -Confirm:$false -IgnoreReboot
-            Write-Host ($status | Where Result -eq "Failed").Length
             if (($status | Where Result -eq "Installed").Length -gt 0)
             {
                 Restart-Computer -Force
