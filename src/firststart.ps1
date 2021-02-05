@@ -51,11 +51,13 @@ if ((Get-WindowsUpdate -MaxSize 1073741824 -Verbose).Count -gt 0) {
 }
 
 # Install Hardware Manufacturer Updates
-Write-Host "Start installation manufacturers"
+Write-Host "Check manufacturer"
+
 $manufacturer = (Get-ComputerInfo | Select -expand CsManufacturer)
 
 if ($manufacturer -eq "Lenovo") {
     Write-Host "Lenovo detected"
+    Write-Host "Start installation manufacturer updates"
 
     # Install PendingReboot Module
     if (-Not (Get-Module -ListAvailable -Name LSUClient)) {
