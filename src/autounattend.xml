@@ -154,7 +154,7 @@
 				<!-- Check if an Internet connection is available -->
 				<SynchronousCommand wcm:action="add">
 					<Order>1</Order>
-					<CommandLine>cmd /c powershell -ExecutionPolicy ByPass while (-Not (Test-Connection 8.8.8.8 -Quiet)) { Write-Host "No Internet Connection available" }</CommandLine>
+					<CommandLine>cmd /c powershell -ExecutionPolicy ByPass while (-Not (Test-Connection 8.8.8.8 -Quiet)) { Write-Host "No internet connection available, please connect to it"; Start-Sleep -s 5; }</CommandLine>
 				</SynchronousCommand>
 				<!-- Download customize script (add file here) -->
 				<!-- Download firststart script -->
