@@ -33,7 +33,11 @@ if ((Get-WindowsUpdate -MaxSize 1073741824 -Verbose).Count -gt 0) {
     Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
     $status = Get-WindowsUpdate -MaxSize 1073741824 -Install -AcceptAll -Confirm:$false -IgnoreReboot
     Write-Host ($status | Where Result -eq "Failed").Length
-    Write-Host ($status | Where Result -eq "Installed").Length
+    if (($status | Where Result -eq "Installed").Length -gt 0)
+    {
+        Restart-Computer -Force
+        return
+    }
     
     if ((Test-PendingReboot).IsRebootPending) {
         Restart-Computer -Force
