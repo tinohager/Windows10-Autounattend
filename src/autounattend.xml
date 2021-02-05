@@ -130,8 +130,6 @@
 				<LocalAccounts>
 					<LocalAccount wcm:action="add">
 						<Password>
-							<!-- Powershell not work to encrypt -->
-							<!-- Write-Host ([System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes("mypassword"))) -->
 							<Value>password*</Value>
 							<PlainText>true</PlainText>
 						</Password>
