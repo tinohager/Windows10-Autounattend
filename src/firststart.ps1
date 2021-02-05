@@ -28,27 +28,36 @@ while ((Get-WUInstallerStatus).IsBusy) {
 }
 
 # Install available Windows Updates (less 1GB)
-Write-Host "Start installation system updates"
-if ((Get-WindowsUpdate -MaxSize 1073741824 -Verbose).Count -gt 0) {
-    try {
-        Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
-        $status = Get-WindowsUpdate -MaxSize 1073741824 -Install -AcceptAll -Confirm:$false -IgnoreReboot
-        Write-Host ($status | Where Result -eq "Failed").Length
-        if (($status | Where Result -eq "Installed").Length -gt 0)
-        {
+
+$updateJobTimeoutSeconds = 900
+
+$code = {
+    Write-Host "Start installation system updates"
+    if ((Get-WindowsUpdate -MaxSize 1073741824 -Verbose).Count -gt 0) {
+        try {
+            Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
+            $status = Get-WindowsUpdate -MaxSize 1073741824 -Install -AcceptAll -Confirm:$false -IgnoreReboot
+            Write-Host ($status | Where Result -eq "Failed").Length
+            if (($status | Where Result -eq "Installed").Length -gt 0)
+            {
+                Restart-Computer -Force
+                return
+            }
+            
+            if ((Test-PendingReboot).IsRebootPending) {
+                Restart-Computer -Force
+                return
+            }
+        } catch {
+            Write-Host "Error:`r`n $_.Exception.Message"
             Restart-Computer -Force
-            return
         }
-        
-        if ((Test-PendingReboot).IsRebootPending) {
-            Restart-Computer -Force
-            return
-        }
-    } catch {
-        Write-Host "Error:`r`n $_.Exception.Message"
-        Restart-Computer -Force
     }
 }
+
+$updateJob = Start-Job -ScriptBlock $code
+if (Wait-Job $updateJob -Timeout $updateJobTimeoutSeconds) { Receive-Job $updateJob }
+Remove-Job -force $updateJob
 
 # Install Hardware Manufacturer Updates
 Write-Host "Check manufacturer"
