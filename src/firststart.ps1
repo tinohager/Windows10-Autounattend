@@ -46,6 +46,7 @@ if ((Get-WindowsUpdate -MaxSize 1073741824 -Verbose).Count -gt 0) {
         }
     } catch {
         Write-Host "Error:`r`n $_.Exception.Message"
+        Restart-Computer -Force
     }
 }
 
