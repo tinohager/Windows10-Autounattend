@@ -28,11 +28,11 @@ while ((Get-WUInstallerStatus).IsBusy) {
 }
 
 # Install available Windows Updates (less 1GB)
+Write-Host "Start installation system updates..."
 
 $updateJobTimeoutSeconds = 900
 
 $code = {
-    Write-Host "Start installation system updates"
     if ((Get-WindowsUpdate -MaxSize 1073741824 -Verbose).Count -gt 0) {
         try {
             Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
@@ -66,7 +66,7 @@ $manufacturer = (Get-ComputerInfo | Select -expand CsManufacturer)
 
 if ($manufacturer -eq "Lenovo") {
     Write-Host "Lenovo detected"
-    Write-Host "Start installation manufacturer updates"
+    Write-Host "Start installation manufacturer updates..."
 
     # Install PendingReboot Module
     if (-Not (Get-Module -ListAvailable -Name LSUClient)) {
