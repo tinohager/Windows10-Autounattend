@@ -29,13 +29,13 @@ while ((Get-WUInstallerStatus).IsBusy) {
 
 # Install available Windows Updates (less 1GB)
 Write-Host "Start installation system updates..."
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
 
 $updateJobTimeoutSeconds = 900
 
 $code = {
     if ((Get-WindowsUpdate -MaxSize 1073741824 -Verbose).Count -gt 0) {
         try {
-            Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
             $status = Get-WindowsUpdate -MaxSize 1073741824 -Install -AcceptAll -Confirm:$false -IgnoreReboot
             Write-Host ($status | Where Result -eq "Failed").Length
             if (($status | Where Result -eq "Installed").Length -gt 0)
@@ -56,7 +56,12 @@ $code = {
 }
 
 $updateJob = Start-Job -ScriptBlock $code
-if (Wait-Job $updateJob -Timeout $updateJobTimeoutSeconds) { Receive-Job $updateJob }
+if (Wait-Job $updateJob -Timeout $updateJobTimeoutSeconds) { 
+    Receive-Job $updateJob
+} else {
+    Write-Host "Timeout exceeded"
+    Start-Sleep -s 10
+}
 Remove-Job -force $updateJob
 
 # Install Hardware Manufacturer Updates
