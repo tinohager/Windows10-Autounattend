@@ -133,10 +133,10 @@
 							<Value>password*</Value>
 							<PlainText>true</PlainText>
 						</Password>
-						<Description>Nager account</Description>
-						<DisplayName>Nager</DisplayName>
+						<Description>DeviceAdmin account</Description>
+						<DisplayName>DeviceAdmin</DisplayName>
 						<Group>Administrators</Group>
-						<Name>nager</Name>
+						<Name>deviceadmin</Name>
 					</LocalAccount>
 				</LocalAccounts>
 			</UserAccounts>
@@ -145,7 +145,7 @@
 					<Value>password*</Value>
 					<PlainText>true</PlainText>
 				</Password>
-				<Username>nager</Username>
+				<Username>deviceadmin</Username>
 				<Enabled>true</Enabled>
 			</AutoLogon>
 			<FirstLogonCommands>
