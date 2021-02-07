@@ -3,13 +3,13 @@
 This project is optimized for installation via an USB stick. All available Windows updates are installed and manufacturer specific drivers for Lenovo are installed automatically. Also various software packages can be installed automatically via chocolatey. 
 
 ## Process Flow
-- Check if an Internet connection is available
-- Download the `firststart.ps1` script
-- Execute the `firststart.ps1` script
-- Install Windows Updates
-- Install Hardware Manufacturer Updates
-- Install Chocolatey Software Packages
-- Check is a `customize.ps1` script available and execute it
+1. Check if an Internet connection is available
+1. Download the `firststart.ps1` script
+1. Execute the `firststart.ps1` script
+1. Install Windows Updates
+1. Install Hardware Manufacturer Updates
+1. Install Chocolatey Software Packages
+1. Check is a `customize.ps1` script available and execute it
 
 ## Error Handling
 
