@@ -9,7 +9,7 @@ This project is optimized for installation via an USB stick. All available Windo
 - Install Windows Updates
 - Install Hardware Manufacturer Updates
 - Install Chocolatey Software Packages
-- Check is a customize script available 
+- Check is a `customize.ps1` script available and execute it
 
 ## Error Handling
 
