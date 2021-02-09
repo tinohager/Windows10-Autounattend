@@ -1,5 +1,7 @@
 Write-Host "Windows10-Autounattend"
 
+$runOnceRegistryPath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce"
+
 # Install Nuget PackageProvider
 #if (-Not (Get-PackageProvider -Name NuGet)) {
     Write-Host "Install Nuget PackageProvider"
@@ -30,14 +32,14 @@ while ((Get-WUInstallerStatus).IsBusy) {
 # Install available Windows Updates (less 1GB)
 Write-Host "Start installation system updates..."
 Write-Host "Update job is automatically canceled after 15 minutes"
-Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
+Set-ItemProperty $runOnceRegistryPath -Name "UnattendInstall!" -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
 
 $updateJobTimeoutSeconds = 900
 
 $code = {
     if ((Get-WindowsUpdate -MaxSize 1073741824 -Verbose).Count -gt 0) {
         try {
-            $status = Get-WindowsUpdate -MaxSize 1073741824 -Install -AcceptAll -Confirm:$false -IgnoreReboot
+            $status = Get-WindowsUpdate -MaxSize 1073741824 -Install -AcceptAll -Confirm:$false
             if (($status | Where Result -eq "Installed").Length -gt 0)
             {
                 Restart-Computer -Force
@@ -107,7 +109,7 @@ $missingPackages = $requiredPackages | Where-Object { $installedPackages -NotCon
 
 foreach ($package in $missingPackages) {
     if ((Test-PendingReboot).IsRebootPending) {
-        Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -Name 'UnattendInstall!' -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
+        Set-ItemProperty $runOnceRegistryPath -Name "UnattendInstall!" -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
         Restart-Computer -Force
         return
     }
@@ -118,7 +120,7 @@ foreach ($package in $missingPackages) {
     choco install $package -y
 }
 
-Write-Host "Installation done"
+Remove-ItemProperty $runOnceRegistryPath -Name "UnattendInstall!"
 
 $pathCustomizeScript = "C:\Temp\Unattended\customize.ps1"
 if (Test-Path $pathCustomizeScript -PathType Leaf) {
@@ -126,4 +128,5 @@ if (Test-Path $pathCustomizeScript -PathType Leaf) {
     & $pathCustomizeScript
 }
 
+Write-Host "Installation done"
 Start-Sleep -s 60
