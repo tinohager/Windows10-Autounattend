@@ -2,6 +2,12 @@ Write-Host "Windows10-Autounattend"
 
 $runOnceRegistryPath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce"
 
+# Change Power Plan (2 hour)
+powercfg -change standby-timeout-ac 120
+powercfg -change disk-timeout-ac 120
+powercfg -change monitor-timeout-ac 120
+powercfg -change hibernate-timeout-ac 120
+
 # Install Nuget PackageProvider
 #if (-Not (Get-PackageProvider -Name NuGet)) {
     Write-Host "Install Nuget PackageProvider"
