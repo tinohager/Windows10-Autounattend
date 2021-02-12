@@ -1,4 +1,4 @@
-Write-Host "Windows10-Autounattend"
+﻿Write-Host "Windows10-Autounattend"
 
 $runOnceRegistryPath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce"
 
