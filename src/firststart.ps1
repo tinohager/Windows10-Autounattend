@@ -37,7 +37,7 @@ while ((Get-WUInstallerStatus).IsBusy) {
 
 # Install available Windows Updates (less 1GB)
 Write-Host "Start installation system updates..."
-Write-Host "Update job is automatically canceled after 15 minutes"
+Write-Host "This job will be automatically canceled if it takes longer than 15 minutes to complete"
 Set-ItemProperty $runOnceRegistryPath -Name "UnattendInstall!" -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
 
 $updateJobTimeoutSeconds = 900
