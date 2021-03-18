@@ -21,13 +21,13 @@ powercfg -change hibernate-timeout-ac 120
 # Install Nuget PackageProvider
 #if (-Not (Get-PackageProvider -Name NuGet)) {
     Write-Host "Install Nuget PackageProvider"
-    Install-PackageProvider -Name NuGet -Confirm:$false -Force
+    Install-PackageProvider -Name NuGet -Confirm:$false -Force | Out-Null
 #}
 
 # Install PendingReboot Module
 if (-Not (Get-Module -ListAvailable -Name PendingReboot)) {
     Write-Host "Install PendingReboot Module"
-    Install-Module PendingReboot -Confirm:$false -Force
+    Install-Module PendingReboot -Confirm:$false -Force | Out-Null
 }
 
 # Import PendingReboot Module
@@ -36,7 +36,7 @@ Import-Module PendingReboot
 # Install WindowsUpdate Module
 if (-Not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
     Write-Host "Install WindowsUpdate Module"
-    Install-Module PSWindowsUpdate -Confirm:$false -Force
+    Install-Module PSWindowsUpdate -Confirm:$false -Force | Out-Null
 }
 
 # Check is busy
@@ -48,7 +48,7 @@ while ((Get-WUInstallerStatus).IsBusy) {
 # Install available Windows Updates (less 1GB)
 Write-Host "Start installation system updates..."
 Write-Host "This job will be automatically canceled if it takes longer than 15 minutes to complete"
-Set-ItemProperty $runOnceRegistryPath -Name "UnattendInstall!" -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath"
+Set-ItemProperty $runOnceRegistryPath -Name "UnattendInstall!" -Value "cmd /c powershell -ExecutionPolicy ByPass -File $PSCommandPath" | Out-Null
 
 $updateJobTimeoutSeconds = 900
 
