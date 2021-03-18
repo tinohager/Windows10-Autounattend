@@ -1,6 +1,16 @@
-﻿Write-Host "Windows10-Autounattend"
+Write-Host "Windows10-Autounattend"
 
 $runOnceRegistryPath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce"
+
+# Set Windows Activation Key from UEFI
+$licensingService = Get-WmiObject -Query "SELECT * FROM SoftwareLicensingService"
+if ($key = $licensingService.OA3xOriginalProductKey) {
+	Write-Host "Product Key: $licensingService.OA3xOriginalProductKey"
+	$licensingService.InstallProductKey($key)
+} else {
+	Write-Host "Windows Activation Key not found."
+}
+
 
 # Change Power Plan (2 hour)
 powercfg -change standby-timeout-ac 120
