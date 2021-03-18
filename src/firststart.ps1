@@ -6,7 +6,7 @@ $runOnceRegistryPath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce"
 $licensingService = Get-WmiObject -Query "SELECT * FROM SoftwareLicensingService"
 if ($key = $licensingService.OA3xOriginalProductKey) {
 	Write-Host "Product Key: $licensingService.OA3xOriginalProductKey"
-	$licensingService.InstallProductKey($key)
+	$licensingService.InstallProductKey($key) | Out-Null
 } else {
 	Write-Host "Windows Activation Key not found."
 }
