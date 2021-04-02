@@ -111,17 +111,22 @@ if (-Not (Test-Path "$($env:ProgramData)\chocolatey\choco.exe")) {
 }
 
 # Required Chocolatey packages
+$requiredPackages = @([pscustomobject]@{Name="notepadplusplus";Trust=$False},
+                      [pscustomobject]@{Name="7zip.install";Trust=$False},
+                      [pscustomobject]@{Name="firefox";Trust=$False},
+                      [pscustomobject]@{Name="googlechrome";Trust=$True})
+
 $requiredPackages = @("notepadplusplus", "7zip.install", "firefox", "googlechrome")
-$installedPackages = New-Object Collections.Generic.List[String]
 
 # Load installed packages
+$installedPackages = New-Object Collections.Generic.List[String]
 $installedPackagesPath = Join-Path -Path $PSScriptRoot -ChildPath "installedPackages.txt"
 if (Test-Path $installedPackagesPath -PathType Leaf) {
     $installedPackages.AddRange([string[]](Get-Content $installedPackagesPath))
 }
 
 # Calculate missing packages
-$missingPackages = $requiredPackages | Where-Object { $installedPackages -NotContains $_ }
+$missingPackages = $requiredPackages | Where-Object { $installedPackages -NotContains $_.Name }
 
 foreach ($package in $missingPackages) {
     if ((Test-PendingReboot).IsRebootPending) {
@@ -130,10 +135,17 @@ foreach ($package in $missingPackages) {
         return
     }
 
-    $installedPackages.Add($package)
-    $installedPackages | Out-File $installedPackagesPath
+    if ($package.Trust) {
+        choco install $package -y --ignore-checksums
+    } else {
+        choco install $package -y
+    }
 
-    choco install $package -y
+    # Add package to installed package list
+    $installedPackages.Add($package.Name)
+
+    # Save update to file
+    $installedPackages | Out-File $installedPackagesPath
 }
 
 Remove-ItemProperty $runOnceRegistryPath -Name "UnattendInstall!"
