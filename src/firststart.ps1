@@ -116,8 +116,6 @@ $requiredPackages = @([pscustomobject]@{Name="notepadplusplus";Trust=$False},
                       [pscustomobject]@{Name="firefox";Trust=$False},
                       [pscustomobject]@{Name="googlechrome";Trust=$True})
 
-$requiredPackages = @("notepadplusplus", "7zip.install", "firefox", "googlechrome")
-
 # Load installed packages
 $installedPackages = New-Object Collections.Generic.List[String]
 $installedPackagesPath = Join-Path -Path $PSScriptRoot -ChildPath "installedPackages.txt"
@@ -136,9 +134,11 @@ foreach ($package in $missingPackages) {
     }
 
     if ($package.Trust) {
-        choco install $package -y --ignore-checksums
+        Write-Host "Install Package without checksum check"
+        choco install $package.Name -y --ignore-checksums
     } else {
-        choco install $package -y
+        Write-Host "Install Package with checksum check"
+        choco install $package.Name -y
     }
 
     # Add package to installed package list
