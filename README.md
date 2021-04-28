@@ -2,6 +2,23 @@
 
 This project is optimized for installation via an USB stick. All available Windows updates and Manufacturer specific drivers for Lenovo are installed automatically. Also various software packages can be installed automatically via chocolatey. They default account after the installation is `DeviceAdmin` with the password `password*`
 
+## Create an USB Boot Device
+
+To create a bootable USB stick I recommend one of the following tools. Ventoy has the advantage that several ISOs are available at the same time on a USB stick.
+
+- Use [Ventoy](https://github.com/ventoy/Ventoy) with the `Auto Installation Plugin`
+- Use this [Powershell script](https://github.com/vmware-samples/euc-samples/tree/master/Windows-Samples/Tools%20%26%20Utilities/Windows%2010%20Automated%20Setup%20Media) from VMware
+
+### Ventoy
+
+You should have this files in your program directory.
+
+    .
+    ├── ventoy                                     # Base folder for ventoy configuration
+    ├── ventoy/ventoy.json                         # Vento Configuration
+    ├── ventoy/script/windows_autounattend1.xml    # Windows Auto Unattend Configuration
+    ├── ISO                                        # Base folder for all ISO files
+    ├── ISO/Windows.iso                            # The Windows ISO
 
 ## Process Flow
 1. Check if an Internet connection is available
@@ -38,21 +55,3 @@ If the error dialog is displayed after the installation and the computer hangs i
 | 2 | offlineServicing | After copy the image and before the computer reboots (not used in my project)
 | 3 | specialize | Set language configuration, set hostname
 | 4 | oobeSystem | Before Windows Welcome starts (Create User, Start Powershell Setup Script)
-
-## Create an USB Boot Device
-
-To create a bootable USB stick I recommend one of the following tools. Ventoy has the advantage that several ISOs are available at the same time on a USB stick.
-
-- Use [Ventoy](https://github.com/ventoy/Ventoy) with the `Auto Installation Plugin`
-- Use this [Powershell script](https://github.com/vmware-samples/euc-samples/tree/master/Windows-Samples/Tools%20%26%20Utilities/Windows%2010%20Automated%20Setup%20Media) from VMware
-
-### Ventoy
-
-You should have this files in your program directory.
-
-    .
-    ├── ventoy                                     # Base folder for ventoy configuration
-    ├── ventoy/ventoy.json                         # Vento Configuration
-    ├── ventoy/script/windows_autounattend1.xml    # Windows Auto Unattend Configuration
-    ├── ISO                                        # Base folder for all ISO files
-    ├── ISO/Windows.iso                            # The Windows ISO
