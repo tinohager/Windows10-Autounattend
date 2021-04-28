@@ -1,6 +1,6 @@
 # Windows10 Autounattend
 
-This project is optimized for installation via an USB stick. All available Windows updates are installed and manufacturer specific drivers for Lenovo are installed automatically. Also various software packages can be installed automatically via chocolatey. They default account after the installation is `DeviceAdmin` with the password `password*`
+This project is optimized for installation via an USB stick. All available Windows updates and Manufacturer specific drivers for Lenovo are installed automatically. Also various software packages can be installed automatically via chocolatey. They default account after the installation is `DeviceAdmin` with the password `password*`
 
 
 ## Process Flow
